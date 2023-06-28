@@ -59,9 +59,10 @@ jobs:
         run: |
           poetry --version
       - name: Run FormaLM analysis
-        run: java -jar /home/gradle/formalm/formalm-0.0.1-SNAPSHOT.jar \
-          repo-path="$GITHUB_WORKSPACE" \
-          output-path="/home/gradle" \
+        run: >
+          java -jar /home/gradle/formalm/formalm-0.0.1-SNAPSHOT.jar 
+          repo-path="$GITHUB_WORKSPACE"
+          output-path="/home/gradle"
           services=iac-trivy
       - name: Show SARIF file
         run: cat /home/gradle/report.sarif
