@@ -77,7 +77,7 @@ jobs:
           script: |
             const fs = require('fs');
             const execSync = require('child_process').execSync;
-            const files = execSync('find /home/gradle/iac-summarize/ -type f').toString().split('\n').filter(Boolean);
+            const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
 
             files.forEach(file => {
               const body = fs.readFileSync(file, 'utf8');
