@@ -94,6 +94,9 @@ jobs:
                 const size = info.length;
                 const startLine = info[size - 2];
                 const endLine = info[size - 1];
+                console.log(body);
+                console.log(startLine);
+                console.log(endLine);
               } else {
                 console.log("Unexpected file ${file}");
               }
