@@ -80,12 +80,21 @@ jobs:
             const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
 
             files.forEach(file => {
-              const body = fs.readFileSync(file, 'utf8');
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: body
-              });
+              if (file.startsWith("summary")) {
+                const body = fs.readFileSync(file, 'utf8');
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: body
+                });
+              } else if (file.startsWith("suggestion")) {
+                const body = fs.readFileSync(file, 'utf8');
+                const info = file.split("-");
+                const size = info.length;
+                const startLine = info[size - 2];
+                const endLine = info[size - 1];
+              } else {
+                console.log("Unexpected file ${file}");
+              }
             });
-
