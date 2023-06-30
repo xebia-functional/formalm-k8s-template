@@ -98,7 +98,7 @@ jobs:
                 const size = info.length;
                 const startLine = parseInt(info[size - 2]);
                 const endLine = parseInt(info[size - 1]);
-                
+                 
                 console.log("------DEBUG------");
                 console.log(`path ${path}`);
                 console.log(`start ${startLine}`);
