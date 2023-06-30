@@ -96,8 +96,8 @@ jobs:
                 const path = body.shift(); // side-effectful: gets path and removes line from body
                 const info = filename.split("-");
                 const size = info.length;
-                const startLine = info[size - 2];
-                const endLine = info[size - 1];
+                const startLine = parseInt(info[size - 2]);
+                const endLine = parseInt(info[size - 1]);
                 
                 console.log("------DEBUG------");
                 console.log(`path ${path}`);
