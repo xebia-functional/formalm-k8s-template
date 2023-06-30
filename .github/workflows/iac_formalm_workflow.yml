@@ -93,23 +93,16 @@ jobs:
               } else if (filename.startsWith("suggestion")) {
                 const content = fs.readFileSync(file, 'utf8');
                 const body = content.split("\n");
-                const filename = body.shift(); // side-effectful
+                const path = body.shift(); // side-effectful
                 const info = filename.split("-");
                 const size = info.length;
                 const startLine = info[size - 2];
                 const endLine = info[size - 1];
-                github.rest.pulls.createReviewComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: context.issue.number,
-                  body: body.join("\n"),
-                  commit_id: context.payload.pull_request.head.sha,
-                  path: filename,
-                  side: "RIGHT",
-                  start_line: startLine,
-                  start_side: "RIGHT",
-                  line: endLine
-                });
+                
+                console.log(content);
+                console.log(path);
+                console.log(startLine);
+                console.log(endLine);
               } else {
                 console.log(`Unexpected file ${filename}`);
               }
