@@ -80,7 +80,9 @@ jobs:
             const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
 
             files.forEach(file => {
-              if (file.startsWith("summary")) {
+              const filenameWithExtension = file.substring(file.lastIndexOf("/") + 1);
+              const filename = filenameWithExtension.substring(0, filenameWithExtension.lastIndexOf("."));
+              if (filename.startsWith("summary")) {
                 const body = fs.readFileSync(file, 'utf8');
                 github.rest.issues.createComment({
                   issue_number: context.issue.number,
@@ -88,9 +90,9 @@ jobs:
                   repo: context.repo.repo,
                   body: body
                 });
-              } else if (file.startsWith("suggestion")) {
+              } else if (filename.startsWith("suggestion")) {
                 const body = fs.readFileSync(file, 'utf8');
-                const info = file.split("-");
+                const info = filename.split("-");
                 const size = info.length;
                 const startLine = info[size - 2];
                 const endLine = info[size - 1];
@@ -98,6 +100,6 @@ jobs:
                 console.log(startLine);
                 console.log(endLine);
               } else {
-                console.log(`Unexpected file ${file}`);
+                console.log(`Unexpected file ${filename}`);
               }
             });
