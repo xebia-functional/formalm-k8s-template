@@ -93,7 +93,7 @@ jobs:
               } else if (filename.startsWith("suggestion")) {
                 const content = fs.readFileSync(file, 'utf8');
                 const body = content.split("\n");
-                const path = body.shift(); // side-effectful
+                const path = body.shift(); // side-effectful: gets path and removes line from body
                 const info = filename.split("-");
                 const size = info.length;
                 const startLine = info[size - 2];
