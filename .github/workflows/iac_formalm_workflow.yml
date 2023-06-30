@@ -111,7 +111,7 @@ jobs:
                   pull_number: context.issue.number,
                   body: body.join("\n"),
                   commit_id: context.payload.pull_request.head.sha,
-                  path: path,
+                  path: `kubernetes/configs/${path}`,
                   side: "RIGHT",
                   start_line: startLine,
                   start_side: "RIGHT",
