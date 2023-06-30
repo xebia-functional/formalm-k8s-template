@@ -98,12 +98,18 @@ jobs:
                 const size = info.length;
                 const startLine = info[size - 2];
                 const endLine = info[size - 1];
-                
-                console.log(`filename: ${filename}`);
-                console.log(`content: ${content}`);
-                console.log(`path: ${path}`);
-                console.log(startLine);
-                console.log(endLine);
+                github.rest.pulls.createReviewComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.issue.number,
+                  body: body.join("\n"),
+                  commit_id: context.payload.pull_request.head.sha,
+                  path: path,
+                  side: "RIGHT",
+                  start_line: startLine,
+                  start_side: "RIGHT",
+                  line: endLine
+                });
               } else {
                 console.log(`Unexpected file ${filename}`);
               }
