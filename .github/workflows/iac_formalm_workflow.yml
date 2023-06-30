@@ -98,6 +98,6 @@ jobs:
                 console.log(startLine);
                 console.log(endLine);
               } else {
-                console.log("Unexpected file ${file}");
+                console.log(`Unexpected file ${file}`);
               }
             });
