@@ -99,8 +99,9 @@ jobs:
                 const startLine = info[size - 2];
                 const endLine = info[size - 1];
                 
-                console.log(content);
-                console.log(path);
+                console.log(`filename: ${filename}`);
+                console.log(`content: ${content}`);
+                console.log(`path: ${path}`);
                 console.log(startLine);
                 console.log(endLine);
               } else {
