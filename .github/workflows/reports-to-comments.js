@@ -41,8 +41,7 @@ async function addComments(github, context) {
       }
     });
 
-    console.log("----debug comments generated----");
-    console.log(suggestions);
+    console.log("----debug before github call----");
 
     if (suggestions.length != 0) {
       const obj = await github.rest.pulls.createReview({
