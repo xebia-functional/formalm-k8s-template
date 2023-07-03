@@ -3,7 +3,7 @@ module.exports = ({github, context}) => {
 }
 
 function addComments(github, context) {
-  const fs = require('fs');
+    const fs = require('fs');
     const execSync = require('child_process').execSync;
     const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
 
@@ -28,12 +28,12 @@ function addComments(github, context) {
         const targetPath = body.shift(); // side-effectful: gets path and removes first line from body
 
         const suggestion = {
-          path: targetPath,
           body: body.join("\n"),
+          path: targetPath,
+          side: "RIGHT"
           start_line: startLine,
           start_side: "RIGHT",
-          line: endLine,
-          side: "RIGHT"
+          line: endLine
         };
         suggestions.push(suggestion);
       } else {
@@ -49,13 +49,10 @@ function addComments(github, context) {
         repo: context.repo.repo,
         pull_number: context.issue.number,
         commit_id: context.payload.pull_request.head.sha,
-        event: "COMMENT",
+        event: 'COMMENT',
         comments: suggestions
       });
 
       console.log("----debug github call----");
-      console.log(obj);
     }
-
-    return "fino";
 }
