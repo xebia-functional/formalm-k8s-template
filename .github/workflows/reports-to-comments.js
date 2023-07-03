@@ -1,4 +1,4 @@
-module.exports = ({github, context}) => {
+module.exports = async ({github, context}) => {
   const fs = require('fs');
   const execSync = require('child_process').execSync;
   const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
