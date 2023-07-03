@@ -26,7 +26,7 @@ module.exports = () => {
         path: targetPath,
         body: body.join("\n"),
         start_line: startLine,
-        start_side: "RIGHT"
+        start_side: "RIGHT",
         line: endLine,
         side: "RIGHT"
       }
