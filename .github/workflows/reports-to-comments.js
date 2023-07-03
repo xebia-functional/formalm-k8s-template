@@ -38,7 +38,7 @@ module.exports = ({github, context}) => {
   });
 
   if (suggestions.length != 0) {
-    github.rest.pulls.createReview({
+    const obj = github.rest.pulls.createReview({
       owner: context.repo.owner,
       repo: context.repo.repo,
       pull_number: context.issue.number,
@@ -47,5 +47,7 @@ module.exports = ({github, context}) => {
       body: "Suggestions",
       comments: suggestions
     });
+
+    console.log(obj);
   }
 }
