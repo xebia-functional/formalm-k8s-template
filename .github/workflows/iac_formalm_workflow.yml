@@ -76,4 +76,4 @@ jobs:
         with:
           script: |
             const script = require('./.github/workflows/reports-to-comments.js')
-            script()
+            script({github, context})
