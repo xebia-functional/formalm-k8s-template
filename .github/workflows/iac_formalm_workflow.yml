@@ -14,10 +14,12 @@ jobs:
   check1:
     name: Check on ${{ matrix.os.runner }}
     runs-on: ${{ matrix.os }}
-    container: ghcr.io/xebia-functional/formalm:main
+    container: ghcr.io/xebia-functional/formalm:cu-865cmu9cc-suggestions-in-comments
     permissions:
       contents: read  #  to fetch code (actions/checkout)
       packages: read  #  to fetch packages (docker)
+      discussions: write
+      pull-requests: write
     defaults:
       run:
         shell: ${{ matrix.shell }}
@@ -59,20 +61,19 @@ jobs:
         run: |
           poetry --version
       - name: Run FormaLM analysis
-        run: java -jar /home/gradle/formalm/formalm-0.0.1-SNAPSHOT.jar \
-          repo-path="$GITHUB_WORKSPACE" \
-          output-path="/home/gradle" \
-          services=iac-trivy
+        run: >
+          java -jar /home/gradle/formalm/formalm-0.0.1-SNAPSHOT.jar 
+          repo-path="$GITHUB_WORKSPACE"
+          output-path="/home/gradle"
+          services=trivy
       - name: Show SARIF file
         run: cat /home/gradle/report.sarif
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: home/gradle/report.sarif
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
+          sarif_file: /home/gradle/report.sarif
+      - uses: actions/github-script@v6
         with:
-          name: my-artifact
-          path: /home/gradle/reports
-          retention-days: 90
-
+          script: |
+            const script = require('./.github/workflows/reports-to-comments.js')
+            script({github, context})
