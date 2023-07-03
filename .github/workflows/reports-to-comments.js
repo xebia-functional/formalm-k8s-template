@@ -54,7 +54,6 @@ function addComments(github, context) {
       });
 
       console.log("----debug github call----");
-      console.log(obj);
     }
 
     return "fino";
