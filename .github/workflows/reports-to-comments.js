@@ -50,7 +50,6 @@ async function addComments(github, context) {
         repo: context.repo.repo,
         pull_number: context.issue.number,
         commit_id: context.payload.pull_request.head.sha,
-        event: "COMMENT",
         body: "Suggestions",
         comments: suggestions
       });
