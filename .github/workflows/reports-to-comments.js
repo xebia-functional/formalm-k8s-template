@@ -41,6 +41,9 @@ async function addComments(github, context) {
       }
     });
 
+    console.log("----debug comments generated----");
+    console.log(suggestions);
+
     if (suggestions.length != 0) {
       const obj = await github.rest.pulls.createReview({
         owner: context.repo.owner,
@@ -52,7 +55,7 @@ async function addComments(github, context) {
         comments: suggestions
       });
 
-      console.log("----debug----");
+      console.log("----debug github call----");
       console.log(obj);
     }
 
