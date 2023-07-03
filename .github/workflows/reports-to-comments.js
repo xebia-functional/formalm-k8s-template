@@ -11,15 +11,7 @@ function addComments(github, context) {
 
     files.forEach(file => { // report file
       const filename = file.substring(file.lastIndexOf("/") + 1, file.lastIndexOf("."));
-      if (filename.startsWith("summary")) {
-        const body = fs.readFileSync(file, 'utf8');
-        github.rest.issues.createComment({
-          issue_number: context.issue.number,
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          body: body
-        });
-      } else if (filename.startsWith("suggestion")) {
+      if (filename.startsWith("suggestion")) {
         const info = filename.split("-");
         const startLine = parseInt(info[info.length - 2]);
         const endLine = parseInt(info[info.length - 1]); // parsing lines from report file's name
