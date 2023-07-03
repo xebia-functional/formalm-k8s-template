@@ -1,0 +1,26 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch
+spec:
+  version: 8.8.1
+  nodeSets:
+    - name: default
+      count: 1
+      config:
+        node.store.allow_mmap: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+data:
+  elasticsearch.yml: |
+    cluster.name: elasticsearch-pod
+    node.name: ${HOSTNAME}
+    network.host: 0.0.0.0
+    
+    bootstrap.memory_lock: false
+    
+    discovery.zen.minimum_master_nodes: 2
+    discovery.zen.ping.unicast.hosts: ["es-0", "es-1", "es-2"]
