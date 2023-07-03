@@ -2,7 +2,7 @@ module.exports = ({github, context}) => {
   addComments(github, context);
 }
 
-async function addComments(github, context) {
+function addComments(github, context) {
   const fs = require('fs');
     const execSync = require('child_process').execSync;
     const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
@@ -44,11 +44,12 @@ async function addComments(github, context) {
     console.log("----debug before github call----");
 
     if (suggestions.length != 0) {
-      const obj = await github.rest.pulls.createReview({
+      github.rest.pulls.createReview({
         owner: context.repo.owner,
         repo: context.repo.repo,
         pull_number: context.issue.number,
         commit_id: context.payload.pull_request.head.sha,
+        event: "COMMENT",
         comments: suggestions
       });
 
