@@ -48,6 +48,7 @@ module.exports = ({github, context}) => {
       comments: suggestions
     });
 
+    console.log("----debug----")
     console.log(obj);
   }
 }
