@@ -38,7 +38,7 @@ module.exports = ({github, context}) => {
   });
 
   if (suggestions.length != 0) {
-    const obj = github.rest.pulls.createReview({
+    const obj = await github.rest.pulls.createReview({
       owner: context.repo.owner,
       repo: context.repo.repo,
       pull_number: context.issue.number,
