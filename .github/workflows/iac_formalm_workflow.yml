@@ -74,5 +74,6 @@ jobs:
           sarif_file: /home/gradle/report.sarif
       - uses: actions/github-script@v6
         with:
-          run: |
-            ./reports-to-comments.mjs
+          script: |
+            const script = require('./reports-to-comments.js')
+            script()

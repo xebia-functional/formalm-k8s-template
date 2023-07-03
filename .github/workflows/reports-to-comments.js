@@ -1,4 +1,7 @@
-console.log("it works!");
+module.exports = () => {
+  console.log("it works!");
+}
+
 /*const fs = require('fs');
 const execSync = require('child_process').execSync;
 const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
