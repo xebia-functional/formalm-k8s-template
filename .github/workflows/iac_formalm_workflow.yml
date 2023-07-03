@@ -74,5 +74,5 @@ jobs:
           sarif_file: /home/gradle/report.sarif
       - uses: actions/github-script@v6
         with:
-          script: |
+          run: |
             ./reports-to-comments.mjs
