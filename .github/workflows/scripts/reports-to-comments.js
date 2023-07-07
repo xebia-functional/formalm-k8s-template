@@ -11,7 +11,7 @@ function addComments(github, context, modifiedFiles) {
     const fs = require('fs');
     const execSync = require('child_process').execSync;
     files = []
-    if(!fs.existsSync('/home/gradle/reports/')) {
+    if(fs.existsSync('/home/gradle/reports/')) {
         files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
     }
 
