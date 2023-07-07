@@ -1,11 +1,19 @@
 module.exports = ({github, context}) => {
-  addComments(github, context);
+  manageComments(github, context);
 }
 
-function addComments(github, context) {
+function manageComments(github, context) {
+    const modifiedFiles = getModifiedFiles(process.env.DATA);
+    addComments(github, context, modifiedFiles);
+}
+
+function addComments(github, context, modifiedFiles) {
     const fs = require('fs');
     const execSync = require('child_process').execSync;
-    const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
+    files = []
+    if(fs.existsSync('/home/gradle/reports/')) {
+        files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
+    }
 
     const suggestions = [];
 
@@ -26,22 +34,31 @@ function addComments(github, context) {
 
         const body = fs.readFileSync(file, 'utf8').split("\n");
         const targetPath = body.shift(); // side-effectful: gets path and removes first line from body
-
-        const suggestion = {
-          body: body.join("\n"),
-          path: targetPath,
-          side: "RIGHT",
-          start_line: startLine,
-          start_side: "RIGHT",
-          line: endLine
-        };
-        suggestions.push(suggestion);
+        if(modifiedFiles.has(targetPath) && check(startLine, endLine, modifiedFiles.get(targetPath))){
+            if (startLine >= endLine) {
+                const suggestion = {
+                  body: body.join("\n"),
+                  path: targetPath,
+                  side: "RIGHT",
+                  line: startLine
+                };
+                suggestions.push(suggestion);
+            } else {
+                const suggestion = {
+                  body: body.join("\n"),
+                  path: targetPath,
+                  side: "RIGHT",
+                  start_line: startLine,
+                  start_side: "RIGHT",
+                  line: endLine
+                };
+                suggestions.push(suggestion);
+            }
+        }
       } else {
         console.log(`Unexpected file ${filename}`);
       }
     });
-
-    console.log("----debug before github call----");
 
     if (suggestions.length != 0) {
       github.rest.pulls.createReview({
@@ -52,7 +69,27 @@ function addComments(github, context) {
         event: 'COMMENT',
         comments: suggestions
       });
-
-      console.log("----debug github call----");
     }
+}
+
+function getModifiedFiles(content) {
+    const fileLinesMap = new Map();
+    jsonContent = JSON.parse(content)
+    jsonContent.forEach(diff => {
+      const { filename, patch } = diff;
+
+      const patchLines = patch.match(/@@ -\d+,\d+ \+(\d+),(\d+) @@/);
+      if (patchLines) {
+        const startLine = parseInt(patchLines[1], 10);
+        endLine = startLine + parseInt(patchLines[2], 10) - 1;
+        if(endLine < 0)
+          endLine = 0
+        fileLinesMap.set(filename, { startLine, endLine });
+      }
+    });
+    return fileLinesMap;
+}
+
+function check(startLine, endLine, fileLinesMap){
+  return startLine >= fileLinesMap.startLine && endLine <= fileLinesMap.endLine;
 }
