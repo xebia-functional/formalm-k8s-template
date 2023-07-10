@@ -82,6 +82,7 @@ function commentToCodeAnalysis(github, context) {
 }
 
 function reportsToComments(files, modifiedFiles, context) {
+    const fs = require('fs');
     const suggestions = [];
     files.forEach(file => { // report file
       const filename = file.substring(file.lastIndexOf("/") + 1, file.lastIndexOf("."));
