@@ -4,35 +4,33 @@ module.exports = ({github, context}) => {
 
 function manageComments(github, context) {
     const modifiedFiles = getModifiedFiles(process.env.DATA);
-    addComments(github, context, modifiedFiles);
+    addComments(github, context, github, modifiedFiles);
 }
 
 function addComments(github, context, modifiedFiles) {
     const fs = require('fs');
     const execSync = require('child_process').execSync;
-    const comments = [];
 
     if(fs.existsSync('/home/gradle/reports/')) {
         const files = execSync('find /home/gradle/reports/ -type f').toString().split('\n').filter(Boolean);
-//      Get the comment pointing to the code analysis report
-        comments.push(commentToCodeAnalysis(github, context));
+//      Create comment pointing to the code analysis report
+        commentToCodeAnalysis(github, context);
 //      Get the comments pointing to the suggestions and summary
-        comments.push(reportsToComments(files, modifiedFiles, context));
+        const comments = reportsToComments(files, modifiedFiles, context);
+        //  Create the review with the all the comments
+        if (comments.length != 0) {
+          github.rest.pulls.createReview({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+            commit_id: context.payload.pull_request.head.sha,
+            event: 'COMMENT',
+            comments: comments
+          });
+        }
     } else {
-//      Get the comment explaining that there is no code analysis report
-        comments.push(noReportComment(context));
-    }
-
-//  Create the review with the all the comments
-    if (comments.length != 0) {
-      github.rest.pulls.createReview({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        pull_number: context.issue.number,
-        commit_id: context.payload.pull_request.head.sha,
-        event: 'COMMENT',
-        comments: comments
-      });
+//      Create comment explaining that there is no code analysis report
+        noReportComment(context);
     }
 }
 
@@ -58,37 +56,14 @@ function check(startLine, endLine, fileLinesMap){
   return startLine >= fileLinesMap.startLine && endLine <= fileLinesMap.endLine;
 }
 
-function commentToCodeAnalysis(github, context) {
-    const fs = require('fs');
-    const ev = JSON.parse(
-      fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')
-    );
-    const prNum = ev.pull_request.number;
-    url = process.env.URL +
-        "/security/code-scanning?query=pr%3A"+
-        prNum +
-        "+tool%3AFormalm+is%3Aopen";
-    const body = "FormaLM has performed a code analysis " +
-        "and generated a report. " +
-        "Please check the [Security report]("+url+") "+
-        "for more information.";
-    comment = {
-        issue_number: context.issue.number,
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        body: body
-    };
-    return comment;
-}
-
-function reportsToComments(files, modifiedFiles, context) {
+function reportsToComments(files, modifiedFiles, github, context) {
     const fs = require('fs');
     const suggestions = [];
     files.forEach(file => { // report file
       const filename = file.substring(file.lastIndexOf("/") + 1, file.lastIndexOf("."));
       if (filename.startsWith("summary")) {
         const body = fs.readFileSync(file, 'utf8');
-        suggestions.push({
+        github.rest.issues.createComment({
           issue_number: context.issue.number,
           owner: context.repo.owner,
           repo: context.repo.repo,
@@ -129,7 +104,7 @@ function reportsToComments(files, modifiedFiles, context) {
     return suggestions;
 }
 
-function noReportComment(context) {
+function noReportComment(github, context) {
     const body = "FormaLM has performed a code analysis " +
             "and it does not have any comments or suggestions for the project.";
     comment = {
@@ -138,5 +113,38 @@ function noReportComment(context) {
         repo: context.repo.repo,
         body: body
     };
-    return comment;
+    github.rest.issues.createComment({
+      issue_number: context.issue.number,
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      body: body
+    });
+}
+
+function commentToCodeAnalysis(github, context) {
+    const fs = require('fs');
+    const ev = JSON.parse(
+      fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')
+    );
+    const prNum = ev.pull_request.number;
+    url = process.env.URL +
+        "/security/code-scanning?query=pr%3A"+
+        prNum +
+        "+tool%3AFormalm+is%3Aopen";
+    const body = "FormaLM has performed a code analysis " +
+        "and generated a report. " +
+        "Please check the [Security report]("+url+") "+
+        "for more information.";
+    comment = {
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: body
+    };
+    github.rest.issues.createComment({
+      issue_number: context.issue.number,
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      body: body
+    });
 }
