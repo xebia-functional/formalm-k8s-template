@@ -84,6 +84,7 @@ jobs:
         uses: actions/github-script@v6
         env:
           DATA: ${{steps.listFiles.outputs.JSON_CONTENT}}
+          URL: ${{ github.server_url }}/${{ github.repository }}
         with:
           script: |
             const script = require('./.github/workflows/scripts/reports-to-comments.js')
