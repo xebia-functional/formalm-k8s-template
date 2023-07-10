@@ -88,7 +88,7 @@ function reportsToComments(files, modifiedFiles, context) {
       const filename = file.substring(file.lastIndexOf("/") + 1, file.lastIndexOf("."));
       if (filename.startsWith("summary")) {
         const body = fs.readFileSync(file, 'utf8');
-        github.rest.issues.createComment({
+        suggestions.push({
           issue_number: context.issue.number,
           owner: context.repo.owner,
           repo: context.repo.repo,
