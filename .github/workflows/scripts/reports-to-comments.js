@@ -30,7 +30,7 @@ function addComments(github, context, modifiedFiles) {
         }
     } else {
 //      Create comment explaining that there is no code analysis report
-        noReportComment(context);
+        noReportComment(github, context);
     }
 }
 
