@@ -66,8 +66,6 @@ jobs:
           repo-path="$GITHUB_WORKSPACE"
           output-path="/home/gradle"
           services=trivy
-      - name: Show SARIF file
-        run: cat /home/gradle/report.sarif
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -86,15 +84,8 @@ jobs:
         uses: actions/github-script@v6
         env:
           DATA: ${{steps.listFiles.outputs.JSON_CONTENT}}
+          URL: ${{ github.server_url }}/${{ github.repository }}
         with:
           script: |
             const script = require('./.github/workflows/scripts/reports-to-comments.js')
             script({github, context})
-      - name: Create comment to GitHub Code Scanning results
-        uses: actions/github-script@v6
-        env:
-          URL: ${{ github.server_url }}/${{ github.repository }}
-        with:
-          script: |
-            const script = require('./.github/workflows/scripts/codeql-comment.js');
-            script({github, context});
