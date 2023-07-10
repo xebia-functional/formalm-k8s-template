@@ -16,7 +16,7 @@ function addComments(github, context, modifiedFiles) {
 //      Create comment pointing to the code analysis report
         commentToCodeAnalysis(github, context);
 //      Get the comments pointing to the suggestions and summary
-        const comments = reportsToComments(files, modifiedFiles, context);
+        const comments = reportsToComments(files, modifiedFiles, github, context);
         //  Create the review with the all the comments
         if (comments.length != 0) {
           github.rest.pulls.createReview({
