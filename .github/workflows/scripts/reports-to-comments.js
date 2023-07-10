@@ -4,7 +4,7 @@ module.exports = ({github, context}) => {
 
 function manageComments(github, context) {
     const modifiedFiles = getModifiedFiles(process.env.DATA);
-    addComments(github, context, github, modifiedFiles);
+    addComments(github, context, modifiedFiles);
 }
 
 function addComments(github, context, modifiedFiles) {
