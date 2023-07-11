@@ -54,11 +54,15 @@ function getModifiedFiles(content) {
         }
       }
     });
+    console.log(fileLinesMap);
     return fileLinesMap;
 }
 
 function check(startLine, endLine, fileLinesMap){
-  return fileLinesMap.filter(e => e.startLine >= startLine && e.endLine <= endLine).length > 0
+  console.log(fileLinesMap);
+  console.log(startLine);
+  console.log(endLine);
+  return fileLinesMap.filter(e => e.startLine >= startLine && e.endLine <= endLine).length > 0;
 }
 
 function reportsToComments(files, modifiedFiles, github, context) {
