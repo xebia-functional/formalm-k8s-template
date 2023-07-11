@@ -58,7 +58,7 @@ function getModifiedFiles(content) {
 }
 
 function check(startLine, endLine, fileLinesMap){
-  return fileLinesMap.filter(e => e.startLine >= startLine && e.endLine <= endLine).length > 0
+  return fileLinesMap.filter(e => startLine >= e.startLine && endLine <= e.endLine).length > 0
 }
 
 function reportsToComments(files, modifiedFiles, github, context) {
