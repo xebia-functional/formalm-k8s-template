@@ -44,16 +44,21 @@ function getModifiedFiles(content) {
       if (patchLines) {
         const startLine = parseInt(patchLines[1], 10);
         endLine = startLine + parseInt(patchLines[2], 10) - 1;
-        if(endLine < 0)
+        if(endLine < 0){
           endLine = 0;
-        fileLinesMap.set(filename, { startLine, endLine });
+        }
+        if(fileLinesMap.has(filename)){
+            content = fileLinesMap.get(filename).concat([startLine, endLine])
+        } else {
+            fileLinesMap.set(filename, [{ startLine, endLine }]);
+        }
       }
     });
     return fileLinesMap;
 }
 
 function check(startLine, endLine, fileLinesMap){
-  return startLine >= fileLinesMap.startLine && endLine <= fileLinesMap.endLine;
+  return fileLinesMap.filter(e => e.startLine >= startLine && e.endLine <= endLine).length > 0
 }
 
 function reportsToComments(files, modifiedFiles, github, context) {
